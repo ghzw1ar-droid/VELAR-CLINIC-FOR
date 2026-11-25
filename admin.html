@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بوابة الإدارة والاستقبال | عيادة ڤيلار التخصصية لطب الأسنان</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Cairo', 'Almarai', sans-serif;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Almarai', 'Cairo', sans-serif;
+    }
+  </style>
+</head>
+<body id="velar-admin-page" class="bg-slate-100 text-slate-900 min-h-screen antialiased">
+
+  <!-- ====================================================================== -->
+  <!-- PIN LOCK SCREEN OVERLAY                                                -->
+  <!-- ====================================================================== -->
+  <div id="pin-lock-overlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-7 sm:p-8 shadow-2xl border border-slate-200 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-emerald-500/40 flex items-center justify-center mx-auto mb-5 shadow-lg">
+        <svg viewBox="0 0 48 48" class="w-10 h-10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.5 9.5C11.8 9.5 9 13.8 10.2 20.6C11.3 26.8 13.8 36.8 17.8 38.4C20.2 39.3 21.5 31.8 24.5 31.8C27.5 31.8 28.8 39.3 31.2 38.4C35.2 36.8 37.7 26.8 38.8 20.6C40 13.8 37.2 9.5 32.5 9.5C28.8 9.5 27.1 12.2 24.5 12.2C21.9 12.2 20.2 9.5 16.5 9.5Z" fill="#FFFFFF"/>
+          <path d="M7.5 14.5C9.8 22.8 14.4 33.4 20.4 39.2C18.2 31.6 17.5 24.8 19.6 18.2" stroke="#10B981" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="34.5" cy="14.5" r="2.2" fill="#10B981"/>
+        </svg>
+      </div>
+      <h1 class="text-xl font-extrabold text-slate-900 mb-1">بوابة الاستقبال والإدارة</h1>
+      <p class="text-xs text-slate-500 mb-6">عيادة ڤيلار التخصصية لطب الأسنان</p>
+
+      <form id="pin-form" class="space-y-4">
+        <div>
+          <label for="pin-input" class="block text-xs font-bold text-slate-600 mb-1.5">أدخل رمز الدخول (PIN)</label>
+          <input
+            id="pin-input"
+            type="password"
+            dir="ltr"
+            inputmode="numeric"
+            maxlength="6"
+            placeholder="••••"
+            required
+            class="w-full text-center tracking-[0.5em] font-mono text-2xl font-extrabold py-3.5 px-4 rounded-2xl border-2 border-slate-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15 outline-none transition"
+          />
+          <p id="pin-error" class="hidden text-xs font-bold text-red-600 mt-2">رمز الدخول غير صحيح. حاول مرة أخرى.</p>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/25 transition">
+          فتح لوحة التحكم
+        </button>
+      </form>
+
+      <p class="text-[11px] text-slate-400 mt-5">الرمز التجريبي الافتراضي للعرض: <strong class="font-mono text-slate-600" dir="ltr">1234</strong></p>
+      <a href="./index.html" class="inline-block mt-3 text-xs font-bold text-emerald-700 hover:underline">العودة إلى موقع العيادة</a>
+    </div>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- MAIN RECEPTIONIST DASHBOARD                                            -->
+  <!-- ====================================================================== -->
+  <div id="admin-main-content" class="hidden">
+    <!-- Top Bar -->
+    <header class="bg-slate-900 text-white sticky top-0 z-30 border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-slate-800 border border-emerald-500/40 flex items-center justify-center">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-extrabold">لوحة استقبال عيادة ڤيلار</h1>
+            <p id="admin-today-date" class="text-xs text-emerald-300 font-medium"></p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button id="btn-open-walkin" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-extrabold shadow transition">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>إضافة حجز هاتفي / حضوري</span>
+          </button>
+          <a href="./index.html" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-100 text-xs font-bold transition">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">الموقع الرئيسي</span>
+          </a>
+          <button id="btn-lock-admin" type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-white/10 hover:bg-red-600 text-slate-200 transition" title="قفل اللوحة">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+      <!-- 1. DASHBOARD STATS CARDS -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 mb-1">إجمالي حجوزات اليوم</p>
+            <p id="stat-today-total" class="text-3xl font-extrabold text-slate-900">0</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center">
+            <i data-lucide="calendar-days" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 mb-1">المواعيد المؤكدة والحاضرة اليوم</p>
+            <p id="stat-today-confirmed" class="text-3xl font-extrabold text-emerald-600">0</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-500 mb-1">الأوقات الشاغرة المتبقية اليوم</p>
+            <p id="stat-today-open" class="text-3xl font-extrabold text-blue-600">0</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <i data-lucide="clock-3" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. APPOINTMENTS MANAGEMENT -->
+      <section class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">قائمة المواعيد</h2>
+          <div class="flex items-center gap-2">
+            <button type="button" data-admin-filter="today" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-600 text-white">اليوم</button>
+            <button type="button" data-admin-filter="tomorrow" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200">غداً</button>
+            <button type="button" data-admin-filter="all" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200">الكل</button>
+          </div>
+        </div>
+
+        <div id="admin-appointments-list" class="space-y-3">
+          <!-- Populated dynamically by js/admin.js -->
+        </div>
+      </section>
+
+      <!-- 3. CLINIC SCHEDULE & EMERGENCY CLOSURE CONTROLS -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Operating Hours & Settings -->
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-5">
+            <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+            </span>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900">إعدادات أوقات الدوام والواتساب</h3>
+          </div>
+
+          <form id="admin-settings-form" class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label for="set-open-time" class="block text-xs font-bold text-slate-600 mb-1.5">وقت الافتتاح (المسائي)</label>
+                <input id="set-open-time" type="time" dir="ltr" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm font-bold" />
+              </div>
+              <div>
+                <label for="set-close-time" class="block text-xs font-bold text-slate-600 mb-1.5">وقت الإغلاق</label>
+                <input id="set-close-time" type="time" dir="ltr" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm font-bold" />
+              </div>
+              <div>
+                <label for="set-slot-duration" class="block text-xs font-bold text-slate-600 mb-1.5">مدة الموعد (دقيقة)</label>
+                <select id="set-slot-duration" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold bg-white">
+                  <option value="20">20 دقيقة</option>
+                  <option value="30">30 دقيقة</option>
+                  <option value="45">45 دقيقة</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Optional Split Shift -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer">
+                <input id="set-split-enabled" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded" />
+                <span class="text-xs sm:text-sm font-bold text-slate-800">تفعيل شفت صباحي إضافي (دوام فترتين)</span>
+              </label>
+              <div id="split-shift-fields" class="hidden grid grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label for="set-shift2-open" class="block text-xs font-bold text-slate-600 mb-1">بداية الشفت الصباحي</label>
+                  <input id="set-shift2-open" type="time" dir="ltr" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-sm font-bold bg-white" />
+                </div>
+                <div>
+                  <label for="set-shift2-close" class="block text-xs font-bold text-slate-600 mb-1">نهاية الشفت الصباحي</label>
+                  <input id="set-shift2-close" type="time" dir="ltr" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-sm font-bold bg-white" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Clinic WhatsApp Number -->
+            <div>
+              <label for="set-whatsapp" class="block text-xs font-bold text-slate-600 mb-1.5">رقم واتساب العيادة (صيغة دولية بدون +)</label>
+              <input id="set-whatsapp" type="text" dir="ltr" placeholder="9647722959698" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm font-bold text-left" />
+            </div>
+
+            <!-- Weekly Closed Days -->
+            <div>
+              <p class="text-xs font-bold text-slate-600 mb-2">أيام العطلة الأسبوعية</p>
+              <div class="flex flex-wrap gap-2">
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="6" class="accent-emerald-600" /> السبت</label>
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="0" class="accent-emerald-600" /> الأحد</label>
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="1" class="accent-emerald-600" /> الاثنين</label>
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="2" class="accent-emerald-600" /> الثلاثاء</label>
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="3" class="accent-emerald-600" /> الأربعاء</label>
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="4" class="accent-emerald-600" /> الخميس</label>
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold cursor-pointer"><input type="checkbox" name="closed-day" value="5" class="accent-emerald-600" /> الجمعة</label>
+              </div>
+            </div>
+
+            <button type="submit" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white text-sm font-extrabold transition">
+              حفظ الإعدادات وتحديث الموقع فوراً
+            </button>
+          </form>
+        </div>
+
+        <!-- Emergency Close Date Card -->
+        <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2.5 mb-3">
+              <span class="w-9 h-9 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+                <i data-lucide="calendar-off" class="w-5 h-5"></i>
+              </span>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-900">إغلاق طارئ لتاريخ محدد</h3>
+            </div>
+            <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+              في حال وجود عطلة رسمية أو سفر للطبيب، اختر التاريخ لإيقاف جميع الحجوزات في ذلك اليوم تلقائياً على الموقع.
+            </p>
+
+            <div class="flex items-center gap-2 mb-5">
+              <input id="emergency-date-input" type="date" dir="ltr" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm font-bold" />
+              <button id="btn-add-emergency-date" type="button" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-extrabold shrink-0 transition">
+                إغلاق اليوم
+              </button>
+            </div>
+
+            <p class="text-xs font-bold text-slate-600 mb-2">التواريخ المغلقة حالياً:</p>
+            <div id="emergency-dates-list" class="flex flex-wrap gap-2">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-400">
+            تتم المزامنة تلقائياً وفورياً مع الصفحة الرئيسية للعيادة (<code class="font-mono">index.html</code>).
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- ADD MANUAL WALK-IN / PHONE BOOKING MODAL                               -->
+  <!-- ====================================================================== -->
+  <div id="walkin-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="text-lg font-extrabold text-slate-900">إضافة حجز هاتفي / حضوري</h3>
+        <button type="button" data-close-walkin class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">&times;</button>
+      </div>
+
+      <form id="walkin-form" class="space-y-4">
+        <div>
+          <label for="walkin-name" class="block text-xs font-bold text-slate-600 mb-1">اسم المراجع</label>
+          <input id="walkin-name" type="text" required placeholder="الاسم الكامل" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium" />
+        </div>
+        <div>
+          <label for="walkin-phone" class="block text-xs font-bold text-slate-600 mb-1">رقم الهاتف العراقي</label>
+          <input id="walkin-phone" type="tel" dir="ltr" required placeholder="077xxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm font-bold text-left" />
+        </div>
+        <div>
+          <label for="walkin-service" class="block text-xs font-bold text-slate-600 mb-1">الخدمة</label>
+          <select id="walkin-service" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold bg-white"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="walkin-date" class="block text-xs font-bold text-slate-600 mb-1">التاريخ</label>
+            <input id="walkin-date" type="date" dir="ltr" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-mono text-xs font-bold" />
+          </div>
+          <div>
+            <label for="walkin-time" class="block text-xs font-bold text-slate-600 mb-1">الوقت المتاح</label>
+            <select id="walkin-time" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-bold bg-white"></select>
+          </div>
+        </div>
+        <div>
+          <label for="walkin-notes" class="block text-xs font-bold text-slate-600 mb-1">ملاحظات (اختياري)</label>
+          <input id="walkin-notes" type="text" placeholder="مثال: مراجع حضوري" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+        </div>
+
+        <div class="flex items-center gap-2.5 pt-2">
+          <button type="submit" class="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition">تثبيت الحجز وإغلاق الوقت</button>
+          <button type="button" data-close-walkin class="px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="admin-toast" class="hidden"></div>
+
+  <!-- Modular Scripts -->
+  <script src="./js/config.js"></script>
+  <script src="./js/booking.js"></script>
+  <script src="./js/admin.js"></script>
+  <script>
+    if (window.lucide) window.lucide.createIcons();
+  </script>
+</body>
+</html>
